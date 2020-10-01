@@ -1,0 +1,42 @@
+from math import log
+from math import ceil
+from math import floor
+import sys
+
+args = sys.argv
+if len(args) != 5 or any([float(args[i][args[i].index('=') + 1:]) < 0 for i in range(2, 5)]):
+    print("Incorrect parameters")
+    exit()
+
+choice = args[1][args[1].index('=') + 1:]
+first_num = float(args[2][args[2].index('=') + 1:])
+second_num = float(args[3][args[3].index('=') + 1:])
+third_num = float(args[4][args[4].index('=') + 1:])
+
+if choice == "diff":
+    p, n, i = first_num, second_num, third_num / 1200
+    total = 0
+    for m in range(1, int(n) + 1):
+        payment = ceil(p / n + i * (p - ((p * (m - 1)) / n)))
+        total += payment
+        print(f"Month {m}: payment is {payment}")
+    print()
+    print(f"Overpayment = {total - p}")
+elif choice == 'annuity' and 'principal' in args[2] and 'payment' in args[3]:
+    p, a, i = first_num, second_num, third_num/1200
+    months = log(a / (a - i * p), 1 + i)
+    if ceil(months % 12) == 12:
+        print(f"It will take {ceil(months / 12)} years to repay this loan!")
+        print(f"Overpayment = {ceil(months) * a - p}")
+    else:
+        print(f"It will take {floor(months / 12)} years and {ceil(months % 12)} months to repay this loan!")
+        print(f"Overpayment = {ceil(months * a - p)}")
+elif choice == 'annuity' and 'principal' in args[2]:
+    p, n, i = first_num, second_num, third_num/1200
+    payment = ceil(p * ((i * pow(1 + i, n)) / (pow(1 + i, n) - 1)))
+    print(f"Your annuity payment = {payment}!")
+    print(f"Overpayment = {ceil(n * payment - p)}")
+elif choice == 'annuity' and 'payment' in args[2]:
+    a, n, i = first_num, second_num, third_num/1200
+    principal = a / ((i * pow(1 + i, n)) / (pow(1 + i, n) - 1))
+    print(f"Your loan principal = {principal}!")
